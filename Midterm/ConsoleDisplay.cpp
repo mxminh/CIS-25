@@ -51,11 +51,12 @@ void userMenu(Course masterListOfCourses[], StudentList& studentList) {
 		std::cout << "\n--> Creating a Teacher..." << std::endl;
 		teacherMenu(masterListOfCourses, studentList);
 	}
+	// NOT FULLY DEVELOPED YET
 	else if (choice == 4) {
 		std::cout << "\n--> Viewing a Student..." << std::endl;
 
-		for (const auto& student : studentList.getStudents()) { // Iterates through each student in the vector
-			std::cout << student->getName(); // Assuming displayInfo() is a method in the Student class
+		for (const auto& student : studentList.getStudents()) { 
+			std::cout << student->getName(); 
 		}
 		std::cout << "\n--> Please enter the Student ID: ";
 		int student_id;
@@ -158,13 +159,13 @@ void studentMenu(Course masterListOfCourses[], StudentList& studentList) {
 
 			if (numCourses < 0 || numCourses > 30) {
 				std::cout << "\n--> Invalid number of courses. Please enter a number between 1 and 30." << std::endl;
-				continue; // Restart the loop to ask for the number of courses again
+				continue; 
 			}
 
 			if (numCourses == 0) {
 				std::cout << "\n--> Displaying all available courses..." << std::endl;
 				displayAllCourses(masterListOfCourses, 30);
-				continue; // Restart the loop to allow the user to choose again
+				continue; 
 			}
 			std::cout << "\n--> Please enter the Course IDs (between 101 and 130) for the courses you want to enroll in, separated by spaces: ";
 			int courseIDs[30];
@@ -172,7 +173,7 @@ void studentMenu(Course masterListOfCourses[], StudentList& studentList) {
 				std::cin >> courseIDs[i];
 				if (courseIDs[i] < 101 || courseIDs[i] > 130) {
 					std::cout << "\n--> Invalid Course ID: " << courseIDs[i] << ". Please enter a valid Course ID between 101 and 130." << std::endl;
-					i--; // Decrement i to re-enter the invalid course ID
+					i--;
 				}
 			}
 			Course selectedCourses[30];
@@ -388,6 +389,7 @@ void displayAllCourses(const Course courses[], int size) {
 	std::cout << std::string(96, '=') << std::endl;
 }
 
+// BINARY_SEARCH IMPLEMENTATION
 int binary_search_Class(Course masterListOfCourses[], int size, int target) {
 
 	int left = 0;
@@ -395,14 +397,14 @@ int binary_search_Class(Course masterListOfCourses[], int size, int target) {
 	while (left <= right) {
 		int mid = (left + right) / 2;
 		if (masterListOfCourses[mid].course_id == target) {
-			return mid; // Found the course
+			return mid; 
 		}
 		if (masterListOfCourses[mid].course_id < target) {
-			left = mid + 1; // Search in the right half
+			left = mid + 1; 
 		}
 		else {
-			right = mid - 1; // Search in the left half
+			right = mid - 1; 
 		}
 	}
-	return -1; // Target not found; DNE
+	return -1; 
 }
