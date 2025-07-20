@@ -139,7 +139,7 @@ public:
 int main() {
 
 	// Create an instance of Clans with the CSV filename
-	std::string filename = "coc_clans_dataset.csv";     // Name of the CSV file containing clan data (can't attach to github due to size limits)
+	std::string filename = "coc_clans_dataset.csv";    
     Clans clans(filename); 
 
     short int count;
