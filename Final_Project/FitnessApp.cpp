@@ -36,7 +36,7 @@ const char* GOAL_TITLE     = "║                        Goals (ID on left)     
 const char* GOAL_HEAD      = "╠══╦═════════════╦══════════════════════════════╦════════════════════╣";
 const char* GOAL_COL       = "║# ║ Date        ║ Description                  ║ Status             ║";
 const char* GOAL_DIV       = "╠══╬═════════════╬══════════════════════════════╬════════════════════╣";
-
+                            
 const char* SIMPLE_TITLE   = "║ %-54s                                                              ║";
 const char* SIMPLE_DIV     = "╠════════════════════════════════════════════════════════════════════╣";
 
@@ -321,18 +321,90 @@ void FitnessApp::viewProgress() {
             << COLOR_RESET << "\n";
     }
 	std::cout << COLOR_GOAL_YELLOW << "╚══╩═════════════╩═══════════════╩══════╩══════╩══════════╩══════════╝" << COLOR_RESET << "\n\n";
-    // Cardio Sessions
+
+    // ----------- CARDIO TABLE ------------
     std::cout << COLOR_GOAL_YELLOW << SUPER_TOP << COLOR_RESET << "\n";
-    std::cout << COLOR_GOAL_YELLOW << "║                         Cardio Sessions                            ║";
-    std::cout << COLOR_GOAL_YELLOW << "\n" << SIMPLE_DIV << COLOR_RESET << "\n";
-    std::cout << COLOR_GOAL_YELLOW << "║ " << currentUser->loadUserData("cardio.txt");
-    std::cout << std::endl << COLOR_GOAL_YELLOW << SUPER_BOTTOM << COLOR_RESET << "\n\n";
-    // Nutrition Intake
+    std::cout << COLOR_GOAL_YELLOW << "║                       Cardio Sessions                              ║\n";
+    std::cout << COLOR_GOAL_YELLOW << "╠══╦═════════════╦══════════════════╦═══════════╦════════════════════╣\n";
+    std::cout << COLOR_GOAL_YELLOW << "║# ║    Date     ║      Name        ║ Duration  ║ Calories Burned    ║\n";
+    std::cout << COLOR_GOAL_YELLOW << "╠══╬═════════════╬══════════════════╬═══════════╬════════════════════╣\n";
+
+    std::istringstream cardioStream(currentUser->loadUserData("cardio.txt"));
+    std::string cardioLine;
+    int cardioIndex = 1;
+    while (std::getline(cardioStream, cardioLine)) {
+        std::istringstream lineStream(cardioLine);
+        std::string date, name, durationStr, caloriesStr;
+
+        std::getline(lineStream, date, '|');
+        std::getline(lineStream, name, '|');
+        std::getline(lineStream, durationStr, '|');
+        std::getline(lineStream, caloriesStr, '|');
+
+        // Cleanup whitespace
+        auto trim = [](std::string& s) {
+            size_t start = s.find_first_not_of(" ");
+            size_t end = s.find_last_not_of(" ");
+            s = (start == std::string::npos) ? "" : s.substr(start, end - start + 1);
+            };
+
+        trim(date); trim(name); trim(durationStr); trim(caloriesStr);
+
+        std::cout << COLOR_GOAL_YELLOW << "║"
+            << std::setw(2) << cardioIndex++ << "║"
+            << std::setw(13) << date << "║"
+            << std::setw(17) << name.substr(0, 17) << " ║"
+            << std::setw(11) << durationStr.substr(durationStr.find(":") + 1) << "║"
+            << std::setw(20) << caloriesStr.substr(caloriesStr.find(":") + 1) << "║"
+            << COLOR_RESET << "\n";
+    }
+    std::cout << COLOR_GOAL_YELLOW << "╚══╩═════════════╩══════════════════╩═══════════╩════════════════════╝" << COLOR_RESET << "\n\n";
+
+    auto trim = [](std::string& s) {
+        size_t start = s.find_first_not_of(" ");
+        size_t end = s.find_last_not_of(" ");
+        if (start == std::string::npos) {
+            s = "";
+        } else {
+            s = s.substr(start, end - start + 1);
+        }
+    };
+    
+    // ----------- NUTRITION TABLE ------------
     std::cout << COLOR_GOAL_YELLOW << SUPER_TOP << COLOR_RESET << "\n";
-    std::cout << COLOR_GOAL_YELLOW << "║                         Nutrition Intake                           ║";
-    std::cout << COLOR_GOAL_YELLOW << "\n" << SIMPLE_DIV << COLOR_RESET << "\n";
-    std::cout << COLOR_GOAL_YELLOW << "║ " << currentUser->loadUserData("nutrition.txt");
-    std::cout << std::endl << COLOR_GOAL_YELLOW << SUPER_BOTTOM << COLOR_RESET << "\n\n";
+    std::cout << COLOR_GOAL_YELLOW << "║                       Nutrition Intake                             ║\n";
+    std::cout << COLOR_GOAL_YELLOW << "╠══╦═════════════╦════════════════╦═════════╦═══════╦═════╦══════════╣\n";
+    std::cout << COLOR_GOAL_YELLOW << "║# ║    Date     ║      Name      ║ Protein ║ Carbs ║ Fat ║ Calories ║\n";
+    std::cout << COLOR_GOAL_YELLOW << "╠══╬═════════════╬════════════════╬═════════╬═══════╬═════╬══════════╣\n";
+
+    std::istringstream nutritionStream(currentUser->loadUserData("nutrition.txt"));
+    std::string nutritionLine;
+    int nutritionIndex = 1;
+    while (std::getline(nutritionStream, nutritionLine)) {
+        std::istringstream lineStream(nutritionLine);
+        std::string date, name, proteinStr, carbsStr, fatStr, calStr;
+
+        std::getline(lineStream, date, '|');
+        std::getline(lineStream, name, '|');
+        std::getline(lineStream, proteinStr, '|');
+        std::getline(lineStream, carbsStr, '|');
+        std::getline(lineStream, fatStr, '|');
+        std::getline(lineStream, calStr, '|');
+
+        trim(date); trim(name); trim(proteinStr);
+        trim(carbsStr); trim(fatStr); trim(calStr);
+
+        std::cout << COLOR_GOAL_YELLOW << "║"
+            << std::setw(2) << nutritionIndex++ << "║"
+            << std::setw(13) << date << "║"
+            << std::setw(16) << name.substr(0, 15) << "║"
+            << std::setw(9) << proteinStr.substr(proteinStr.find(":") + 1) << "║"
+            << std::setw(7) << carbsStr.substr(carbsStr.find(":") + 1) << "║"
+            << std::setw(5) << fatStr.substr(fatStr.find(":") + 1) << "║"
+            << std::setw(10) << calStr.substr(calStr.find(":") + 1) << "║"
+            << COLOR_RESET << "\n";
+    }
+    std::cout << COLOR_GOAL_YELLOW << "╚══╩═════════════╩════════════════╩═════════╩═══════╩═════╩══════════╝" << COLOR_RESET << "\n\n";
     // Goals Table
     std::cout << COLOR_WORKOUT_HEADER << SUPER_TOP << COLOR_RESET << "\n";
     std::cout << COLOR_WORKOUT_HEADER << GOAL_TITLE << COLOR_RESET << "\n";
@@ -341,20 +413,51 @@ void FitnessApp::viewProgress() {
     std::cout << COLOR_WORKOUT_HEADER << GOAL_DIV << COLOR_RESET << "\n";
     for (size_t i = 0; i < goalManager.getGoalCount(); ++i) {
         const Goal* g = goalManager.getGoal(i);
+
+        std::string message = styleGoalStatus(g->status);
+        short int spaces = 11;
+
+        if (message == COLOR_GOAL_GREEN "Completed" COLOR_RESET) {
+            spaces = 13;
+        }
         std::cout << COLOR_WORKOUT_HEADER << "║"
             << std::setw(2) << (i + 1) << COLOR_WORKOUT_HEADER << "║"
             << std::setw(12) << g->date << " ║"
-            << std::setw(19) << g->description.substr(0, 19) << "           ║"
-            << std::setw(11) << COLOR_RESET << styleGoalStatus(g->status) 
+            << std::setw(30) << g->description.substr(0, 29) << "║ "
+            << std::setw(1) << COLOR_RESET << styleGoalStatus(g->status) << std::setw(5) << COLOR_WORKOUT_HEADER << std::setw(spaces) << std::setfill(' ') << "║"
             << COLOR_RESET << "\n";
     }
-    std::cout << COLOR_WORKOUT_HEADER << SUPER_BOTTOM << COLOR_RESET << "\n";
+    std::cout << COLOR_WORKOUT_HEADER << "╚══╩═════════════╩══════════════════════════════╩════════════════════╝" << COLOR_RESET << "\n\n";
 }
 
 void FitnessApp::manageGoals() {
     std::cout << DIVIDER;
     std::cout << COLOR_TITLE "====================[ Manage Goals ]====================" COLOR_RESET "\n\n";
-    viewProgress();
+    std::cout << COLOR_WORKOUT_HEADER << SUPER_TOP << COLOR_RESET << "\n";
+    std::cout << COLOR_WORKOUT_HEADER << GOAL_TITLE << COLOR_RESET << "\n";
+    std::cout << COLOR_WORKOUT_HEADER << GOAL_HEAD << COLOR_RESET << "\n";
+    std::cout << COLOR_WORKOUT_HEADER << GOAL_COL << COLOR_RESET << "\n";
+    std::cout << COLOR_WORKOUT_HEADER << GOAL_DIV << COLOR_RESET << "\n";
+    
+	// Display Goals
+    for (size_t i = 0; i < goalManager.getGoalCount(); ++i) {
+        const Goal* g = goalManager.getGoal(i);
+
+		std::string message = styleGoalStatus(g->status);
+        short int spaces = 11;
+
+        if (message == COLOR_GOAL_GREEN "Completed" COLOR_RESET) {
+            spaces = 13;
+        }
+        std::cout << COLOR_WORKOUT_HEADER << "║"
+            << std::setw(2) << (i + 1) << COLOR_WORKOUT_HEADER << "║"
+            << std::setw(12) << g->date << " ║"
+            << std::setw(30) << g->description.substr(0, 29) << "║ "
+            << std::setw(1) << COLOR_RESET << styleGoalStatus(g->status) << std::setw(5) << COLOR_WORKOUT_HEADER << std::setw(spaces) << std::setfill(' ') << "║"
+            << COLOR_RESET << "\n";
+    }
+	std::cout << COLOR_WORKOUT_HEADER << "╚══╩═════════════╩══════════════════════════════╩════════════════════╝" << COLOR_RESET << "\n\n";
+
     std::cout << COLOR_MENU
         "\t[1] Add Goal\n"
         "\t[2] Mark Goal as Done\n"
@@ -513,9 +616,12 @@ void FitnessApp::viewCalendar() {
 void FitnessApp::editRemoveWorkouts() {
     std::cout << DIVIDER;
     std::cout << COLOR_TITLE "====================[ Edit/Remove Workouts ]====================" COLOR_RESET "\n\n";
+    // Workout Table
     std::cout << COLOR_GOAL_YELLOW << SUPER_TOP << COLOR_RESET << "\n";
-    std::cout << COLOR_GOAL_YELLOW << "║                        Edit/Remove Workouts                        ║";
-    std::cout << COLOR_GOAL_YELLOW << "\n" << SIMPLE_DIV << COLOR_RESET << "\n";
+    std::cout << COLOR_GOAL_YELLOW << "║                        Edit/Remove Workout                         ║\n";
+    std::cout << COLOR_GOAL_YELLOW << WORKOUT_HEAD << COLOR_RESET << "\n";
+    std::cout << COLOR_GOAL_YELLOW << WORKOUT_COL << COLOR_RESET << "\n";
+    std::cout << COLOR_GOAL_YELLOW << WORKOUT_DIV << COLOR_RESET << "\n";
     for (size_t i = 0; i < workoutManager.getWorkoutCount(); ++i) {
         const WorkoutEntry* e = workoutManager.getWorkout(i);
         double totalVol = e->weight * e->reps * e->sets;
@@ -529,7 +635,7 @@ void FitnessApp::editRemoveWorkouts() {
             << std::setw(10) << std::fixed << std::setprecision(2) << totalVol << "║"
             << COLOR_RESET << "\n";
     }
-    std::cout << COLOR_GOAL_YELLOW << SUPER_BOTTOM << COLOR_RESET << "\n";
+    std::cout << COLOR_GOAL_YELLOW << "╚══╩═════════════╩═══════════════╩══════╩══════╩══════════╩══════════╝" << COLOR_RESET << "\n";
     if (workoutManager.getWorkoutCount() == 0) {
         std::cout << COLOR_WARN "\tNo workouts to edit/remove.\n" COLOR_RESET;
         return;
@@ -596,17 +702,31 @@ void FitnessApp::editRemoveWorkouts() {
 void FitnessApp::editRemoveGoals() {
     std::cout << DIVIDER;
     std::cout << COLOR_TITLE "====================[ Edit/Remove Goals ]====================" COLOR_RESET "\n\n";
+
+    // Goals Table
     std::cout << COLOR_WORKOUT_HEADER << SUPER_TOP << COLOR_RESET << "\n";
-    std::cout << COLOR_WORKOUT_HEADER << "║                        Edit/Remove Goals                           ║";
-    std::cout << COLOR_WORKOUT_HEADER << "\n" << SIMPLE_DIV << COLOR_RESET << "\n";
+	std::cout << COLOR_WORKOUT_HEADER << "║                        Edit/Remove Goal                            ║\n";
+    std::cout << COLOR_WORKOUT_HEADER << GOAL_HEAD << COLOR_RESET << "\n";
+    std::cout << COLOR_WORKOUT_HEADER << GOAL_COL << COLOR_RESET << "\n";
+    std::cout << COLOR_WORKOUT_HEADER << GOAL_DIV << COLOR_RESET << "\n";
     for (size_t i = 0; i < goalManager.getGoalCount(); ++i) {
         const Goal* g = goalManager.getGoal(i);
-        std::cout << COLOR_WORKOUT_HEADER << "" << std::setw(2) << (i + 1) << ". " << COLOR_RESET
-            << COLOR_WORKOUT_HEADER << std::setw(12) << g->date << " | "
-            << std::setw(19) << g->description << " | " << COLOR_RESET
-            << styleGoalStatus(g->status) << COLOR_RESET << "\n";
+
+        std::string message = styleGoalStatus(g->status);
+        short int spaces = 11;
+
+        if (message == COLOR_GOAL_GREEN "Completed" COLOR_RESET) {
+            spaces = 13;
+        }
+        std::cout << COLOR_WORKOUT_HEADER << "║"
+            << std::setw(2) << (i + 1) << COLOR_WORKOUT_HEADER << "║"
+            << std::setw(12) << g->date << " ║"
+            << std::setw(30) << g->description.substr(0, 29) << "║ "
+            << std::setw(1) << COLOR_RESET << styleGoalStatus(g->status) << std::setw(5) << COLOR_WORKOUT_HEADER << std::setw(spaces) << std::setfill(' ') << "║"
+            << COLOR_RESET << "\n";
     }
-    std::cout << COLOR_WORKOUT_HEADER << SUPER_BOTTOM << COLOR_RESET << "\n";
+    std::cout << COLOR_WORKOUT_HEADER << "╚══╩═════════════╩══════════════════════════════╩════════════════════╝" << COLOR_RESET << "\n\n";
+
     if (goalManager.getGoalCount() == 0) {
         std::cout << COLOR_WARN "\tNo goals to edit/remove.\n" COLOR_RESET;
         return;
@@ -627,7 +747,7 @@ void FitnessApp::editRemoveGoals() {
     if (idx < 1 || idx > goalManager.getGoalCount()) {
         std::cout << COLOR_FAILURE "\tInvalid goal number.\n" COLOR_RESET;
         return;
-    }
+    }   
     --idx;
     if (choice == "1") {
         std::cout << COLOR_INPUT "\tEnter new goal name: " COLOR_RESET;
