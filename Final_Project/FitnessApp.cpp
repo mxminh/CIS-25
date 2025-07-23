@@ -28,14 +28,14 @@
 const char* SUPER_TOP      = "╔════════════════════════════════════════════════════════════════════╗";
 const char* SUPER_BOTTOM   = "╚════════════════════════════════════════════════════════════════════╝";
 const char* WORKOUT_TITLE  = "║                    Weight Workouts (ID on left)                    ║";
-const char* WORKOUT_HEAD   = "╠══╦─────────────╦───────────────╦──────╦──────╦──────────╦──────────╣";
-const char* WORKOUT_COL    = "║# ║ Date        ║ Name          ║Sets  ║Reps  ║ Weight   ║ Volume   ║";
-const char* WORKOUT_DIV    = "╠══╬─────────────╬───────────────╬──────╬──────╬──────────╬──────────╣";
+const char* WORKOUT_HEAD   = "╠══╦═════════════╦═══════════════╦══════╦══════╦══════════╦══════════╣";
+const char* WORKOUT_COL    = "║# ║ Date        ║ Name          ║ Sets ║ Reps ║ Weight   ║ Volume   ║";
+const char* WORKOUT_DIV    = "╠══╬═════════════╬═══════════════╬══════╬══════╬══════════╬══════════╣";
 
 const char* GOAL_TITLE     = "║                        Goals (ID on left)                          ║";
-const char* GOAL_HEAD      = "╠══╦─────────────╦──────────────────────────────╦────────────────────╣";
+const char* GOAL_HEAD      = "╠══╦═════════════╦══════════════════════════════╦════════════════════╣";
 const char* GOAL_COL       = "║# ║ Date        ║ Description                  ║ Status             ║";
-const char* GOAL_DIV       = "╠══╬─────────────╬──────────────────────────────╬────────────────────╣";
+const char* GOAL_DIV       = "╠══╬═════════════╬══════════════════════════════╬════════════════════╣";
 
 const char* SIMPLE_TITLE   = "║ %-54s                                                              ║";
 const char* SIMPLE_DIV     = "╠════════════════════════════════════════════════════════════════════╣";
@@ -320,7 +320,7 @@ void FitnessApp::viewProgress() {
             << std::setw(10) << std::fixed << std::setprecision(2) << totalVol << "║"
             << COLOR_RESET << "\n";
     }
-    std::cout << COLOR_GOAL_YELLOW << SUPER_BOTTOM << COLOR_RESET << "\n\n";
+	std::cout << COLOR_GOAL_YELLOW << "╚══╩═════════════╩═══════════════╩══════╩══════╩══════════╩══════════╝" << COLOR_RESET << "\n\n";
     // Cardio Sessions
     std::cout << COLOR_GOAL_YELLOW << SUPER_TOP << COLOR_RESET << "\n";
     std::cout << COLOR_GOAL_YELLOW << "║                         Cardio Sessions                            ║";
